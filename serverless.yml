@@ -35,6 +35,13 @@ functions:
           path: /user/{id}
           method: put
 
+  # updateRecordUser:
+  #   handler: routes/userRouter.updateRecordUser
+  #   events:
+  #     - httpApi:
+  #         path: /user/{id}
+  #         method: patch
+
   deleteUser:
     handler: routes/userRouter.deleteUser
     events:

@@ -32,15 +32,23 @@ const updateUser = async (event) => {
     return {status: 200, body: {user}}
 }
 
+const updateRecordUser = async (event) => {
+    const { id } = event.pathParameters;
+    const newUserData =  JSON.parse(event.body);
+    const user = service.updateRecord(id, newUserData);
+
+    return {status: 200, body: {user}}
+}
+
 const deleteUser = async (event) => {
     const { id } = event.pathParameters;
     const response = service.delete(id);
-
     return {status: 200, body: {response}}
 }
 module.exports = {
     getUser,
     addUser,
     updateUser,
+    updateRecordUser,
     deleteUser
 }

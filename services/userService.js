@@ -1,6 +1,8 @@
 // const getConection = require('./../libs/postgresPool');
 // const getConection = require('../libs/postgres');
 const {sequelize} = require('./../libs/sequelize');
+
+const { UserSchema } = require('./../models/userModel.js');
 class UserService {
 
     constructor(){
@@ -9,43 +11,55 @@ class UserService {
         // this.pool.on('error', (err) => console.error(err))
     }
 
-    create(data) {
-      const newUser = {
-        id: parseInt(Math.random() * 100),
-        ...data
-      }
-      this.users.push(newUser);
-      console.log(this.users);
+    async create(data) {
+      const newUser = await UserSchema.create(data)
       return newUser;
     }
 
     async find() {
       
-      const query = 'SELECT * from "Usuario"';
-      const [data] = await sequelize.query(query)
-      return data;
+      // old version to execute query
+      // const query = 'SELECT * from "Usuario"';
+      // const [data] = await sequelize.query(query)
+      const rta = await UserSchema.findAll();
+      return rta;
     }
 
-    findOne(id) {
-      return this.users.find(item => item.id == id);
+    async findOne(id) {
+      const user = await UserSchema.findByPk(id);
+      return user;
     }
 
-    update(id, editUser) {
-      const index = this.users.findIndex(item => item.id == id)
-      if (index === -1) {
-        throw new Error('user not found')
-      }
-      this.users[index] = editUser;
-      return this.users[index];
+    async update(id, editUser) {
+      const user = await UserSchema.findByPk(id);
+      const rta = user.update(editUser);
+      return rta;
     }
 
-    delete(id) {
-      const index = this.users.findIndex(item => item.id == id)
-      if (index === -1) {
-        throw new Error('user not found')
-      }
-      this.users.splice(index, 1);
-      return { id }
+    // async updateRecord(id, editUser) {
+    //   console.log(editUser)
+    //   const correo = editUser.correo
+    //   try {
+    //     if( !correo ){
+    //       console.log('Passed: ', correo);
+    //       const rta = await UserSchema.upsert({usuario_id: id, correo: editUser.correo});
+    //       return rta;
+    //     }
+    //     if (editUser.contrasena != undefined){
+    //       const rta = await UserSchema.upsert({usuario_id: id, contrasena: editUser.contrasena});
+    //       return rta;
+    //     } 
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+        
+    //   }
+      
+
+    async delete(id) {
+      const user = await UserSchema.findByPk(id);
+      await user.destroy();
+      return {id}
     }
 }
 
